@@ -8,7 +8,7 @@ class Collection {
   constructor() {
   }
   async save(record) {
-    const user = await users.find({ username: record.username })
+    const user = await users.find({ username: record.username });
     if (user.length == 0) {
       record.password = await bcrypt.hash(record.password, 5);
       const newRecord = new users(record);
@@ -16,10 +16,9 @@ class Collection {
 
     }
     return Promise.reject();
-  };
+  }
   async authenticate(user, password) {
-    const obj = await users.find({username :user})
-    console.log(password, obj.password)
+    const obj = await users.find({username :user});
     const valid = await bcrypt.compare(password, obj[0].password);
     return valid ? obj : Promise.reject();
   }
@@ -27,9 +26,9 @@ class Collection {
     const token = jwt.sign({ username: user.username }, process.env.SECRET);
     return token;
   }
-   listAll(){
-    let allUser =  users.find({})
-    return allUser
+  listAll(){
+    let allUser =  users.find({});
+    return allUser;
   }
 }
-module.exports = new Collection()
+module.exports = new Collection();
