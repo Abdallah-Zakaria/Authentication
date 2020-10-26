@@ -13,7 +13,6 @@ class Collection {
       record.password = await bcrypt.hash(record.password, 5);
       const newRecord = new users(record);
       return newRecord.save();
-
     }
     return Promise.reject();
   }
@@ -22,13 +21,17 @@ class Collection {
     const valid = await bcrypt.compare(password, obj[0].password);
     return valid ? obj : Promise.reject();
   }
-  async generateToken(user) {
-    const token = jwt.sign({ username: user.username }, process.env.SECRET);
+  generateToken(user) {
+    const token =  jwt.sign({ username: user.username }, process.env.SECRET);
     return token;
   }
   listAll(){
     let allUser =  users.find({});
     return allUser;
+  }
+  read(element) {
+    const query = element ? { username:element } : {};
+    return users.find(query);
   }
 }
 module.exports = new Collection();

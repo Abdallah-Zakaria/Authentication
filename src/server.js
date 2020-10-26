@@ -10,6 +10,7 @@ const authRoutes = require('./auth/router');
 const err404 = require('./middleware/404');
 const err500 = require('./middleware/500');
 // middleware
+app.use(express.static('./public'));
 app.use(express.json());
 // main routes
 app.use('/', authRoutes);

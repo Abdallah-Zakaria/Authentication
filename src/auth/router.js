@@ -6,7 +6,12 @@ const router = express.Router();
 const userModel = require('./models/collection');
 // middleware require
 const finder = require('../middleware/model-finder');
+const oauth = require('../middleware/oauth');
 router.use(express.json());
+
+router.get('/oauth', oauth, (req, res) => {
+  res.json({ token: req.token });
+});
 
 // routes
 router.post('/signup', sginup);
