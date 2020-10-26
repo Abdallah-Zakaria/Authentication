@@ -16,7 +16,7 @@ describe('Authentication test', () => {
     const obj = { username: 'test2', password: '123' };
     return mockRequest.post('/signup').send(obj).then(result => {
       return mockRequest.post('/signin').auth(obj.username, obj.password).then(() => {
-        const token = jwt.verify(result.body.token, process.env.SECRET);
+        const token = jwt.verify(result.body.token, 123456789);
         expect(token).toBeDefined();
       });
     });
