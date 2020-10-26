@@ -22,7 +22,7 @@ class Collection {
     return valid ? obj : Promise.reject();
   }
   generateToken(user) {
-    const token =  jwt.sign({ username: user.username }, 123456789);
+    const token =  jwt.sign({ username: user.username }, process.env.SECRET);
     return token;
   }
   listAll(){
