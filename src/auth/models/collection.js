@@ -3,7 +3,7 @@
 const users = require('./users-model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const SECRET = process.env.SECRET;
 class Collection {
   constructor() {
   }
@@ -22,8 +22,14 @@ class Collection {
     return valid ? obj : Promise.reject();
   }
   generateToken(user) {
-    const token =  jwt.sign({ username: user.username }, process.env.SECRET);
-    return token;
+    try{
+      const token =  jwt.sign({ username: user.username }, SECRET , {
+        expiresIn: '15min'});
+      console.log(token);
+      return token;
+    }catch(err){
+      console.log(err);
+    }
   }
   listAll(){
     let allUser =  users.find({});
@@ -32,6 +38,20 @@ class Collection {
   read(element) {
     const query = element ? { username:element } : {};
     return users.find(query);
+  }
+  async authenticateToken(token) {
+    try {
+      const tokenObject = jwt.verify(token, SECRET);
+      console.log('TOKEN OBJECT', tokenObject);
+      let checkDB = await  this.read(tokenObject.username);
+      if (checkDB) {
+        return Promise.resolve(tokenObject);
+      } else {
+        return Promise.reject();
+      }
+    } catch (e) {
+      return Promise.reject(e.message);
+    }
   }
 }
 module.exports = new Collection();

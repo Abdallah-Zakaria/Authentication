@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     const [user, pass] = base64.decode(basicAuth).split(':'); // => mahmoud:1234 => ['mahmoud','1234]
     collection.authenticate(user, pass)
       .then(async (validUser) => {
-        req.token = await collection.generateToken(validUser);
+        req.token = await collection.generateToken(validUser[0]);
         req.data = [user, pass];
         next();
       })

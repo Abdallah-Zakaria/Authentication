@@ -6,6 +6,7 @@ const app = express();
 require('dotenv').config();
 
 // refactor routes
+const extraRoutes = require('./extra-routes');
 const authRoutes = require('./auth/router');
 const err404 = require('./middleware/404');
 const err500 = require('./middleware/500');
@@ -14,6 +15,7 @@ app.use(express.static('./public'));
 app.use(express.json());
 // main routes
 app.use('/', authRoutes);
+app.use(extraRoutes);
 
 app.use('*', err404);
 app.use(err500);

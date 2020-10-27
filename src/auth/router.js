@@ -5,7 +5,7 @@ const router = express.Router();
 // modules
 const userModel = require('./models/collection');
 // middleware require
-const finder = require('../middleware/model-finder');
+const finder = require('../middleware/basicAuth');
 const oauth = require('../middleware/oauth');
 router.use(express.json());
 
@@ -16,14 +16,13 @@ router.get('/oauth', oauth, (req, res) => {
 // routes
 router.post('/signup', sginup);
 router.post('/signin', finder, signin);
-router.get('/users' , finder,listAll);
+router.get('/users', finder, listAll);
 
 // handler
 function sginup(req, res) {
   userModel.save(req.body).then((user) => {
-    userModel.generateToken(user).then(token => {
-      res.json({ token });
-    });
+    const token = userModel.generateToken(user);
+    res.json({ token });
   });
 }
 function signin(req, res) {
@@ -31,7 +30,7 @@ function signin(req, res) {
     res.json({ token: req.token, user: record });
   });
 }
-async function listAll(req,res){
+async function listAll(req, res) {
   const allUser = await userModel.listAll();
   res.json(allUser);
 }
