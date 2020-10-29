@@ -1,0 +1,41 @@
+{
+  "name": "Authentication",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint '**/*.js'",
+    "start": "node index.js",
+    "test": "jest --verbose --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdallah-Zakaria/Authentication.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abdallah-Zakaria/Authentication/issues"
+  },
+  "homepage": "https://github.com/Abdallah-Zakaria/Authentication#readme",
+  "dependencies": {
+    "@code-fellows/supergoose": "^1.0.11",
+    "base-64": "^1.0.0",
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.10",
+    "superagent": "^6.1.0"
+  },
+  "devDependencies": {
+    "jest": "^26.6.1",
+    "eslint": "^7.12.0"
+
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
