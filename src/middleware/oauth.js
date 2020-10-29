@@ -53,11 +53,11 @@ async function getUser(remoteUser) {
   console.log('checkkkkkk ' ,check);
   if (check.length > 0) {
     const user = check;
-    const token = collection.generateToken(user);
+    const token = collection.generateToken(user , '15min');
     return [user, token];
   } else {
     const user = await collection.save(record);
-    const token = collection.generateToken(user);
+    const token = collection.generateToken(user, '15min');
     return [user, token];
   }
 }

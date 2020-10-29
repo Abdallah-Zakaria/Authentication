@@ -3,7 +3,7 @@
 const users = require('./users-model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const SECRET = process.env.SECRET;
+const SECRET = process.env.SECRET || '123456789';
 class Collection {
   constructor() {
   }
@@ -17,33 +17,34 @@ class Collection {
     return Promise.reject();
   }
   async authenticate(user, password) {
-    const obj = await users.find({username :user});
+    const obj = await users.find({ username: user });
     const valid = await bcrypt.compare(password, obj[0].password);
     return valid ? obj : Promise.reject();
   }
-  generateToken(user) {
-    try{
-      const token =  jwt.sign({ username: user.username }, SECRET , {
-        expiresIn: '15min'});
+  generateToken(user, time) {
+    try {
+      const token = jwt.sign({ username: user.username }, SECRET, {
+        expiresIn: time,
+      });
       console.log(token);
       return token;
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   }
-  listAll(){
-    let allUser =  users.find({});
+  listAll() {
+    let allUser = users.find({});
     return allUser;
   }
   read(element) {
-    const query = element ? { username:element } : {};
+    const query = element ? { username: element } : {};
     return users.find(query);
   }
   async authenticateToken(token) {
     try {
       const tokenObject = jwt.verify(token, SECRET);
       console.log('TOKEN OBJECT', tokenObject);
-      let checkDB = await  this.read(tokenObject.username);
+      let checkDB = await this.read(tokenObject.username);
       if (checkDB) {
         return Promise.resolve(tokenObject);
       } else {

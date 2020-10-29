@@ -8,12 +8,12 @@ module.exports = (req, res, next) => {
     // headers = {authorization: 'basic klajdaksd'}
     const basicAuth = req.headers.authorization.split(' ').pop();
     const [user, pass] = base64.decode(basicAuth).split(':'); // => mahmoud:1234 => ['mahmoud','1234]
-    collection.authenticate(user, pass)
-      .then(async (validUser) => {
-        req.token = await collection.generateToken(validUser[0]);
-        req.data = [user, pass];
-        next();
-      })
+    collection.authenticate(user, pass).then((validUser) => {
+      req.token = collection.generateToken(validUser[0] , '15min');
+      req.user = {user , pass};
+      console.log(req.user);
+      next();
+    })
       .catch((err) => next('Invalid Login'));
   }
 };

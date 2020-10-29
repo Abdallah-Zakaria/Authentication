@@ -21,12 +21,12 @@ router.get('/users', finder, listAll);
 // handler
 function sginup(req, res) {
   userModel.save(req.body).then((user) => {
-    const token = userModel.generateToken(user);
+    const token = userModel.generateToken(user ,'15min');
     res.json({ token });
   });
 }
-function signin(req, res) {
-  userModel.authenticate(req.data[0], req.data[1]).then(record => {
+async function signin(req, res) {
+  await userModel.authenticate(req.user.user, req.user.pass).then(record => {
     res.json({ token: req.token, user: record });
   });
 }

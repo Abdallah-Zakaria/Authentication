@@ -1,29 +1,51 @@
 'use strict';
 
 const supergoose = require('@code-fellows/supergoose');
-const jwt = require('jsonwebtoken');
 const { server } = require('../src/server.js');
 const mockRequest = supergoose(server);
-describe('Authentication test', () => {
-  it('POST to /signup to create a new user is valid', async () => {
-    const obj = { username: 'test1', password: '1234' };
-    return mockRequest.post('/signup').send(obj).send(obj).then(result => {
-      expect(obj[name]).toEqual(result.body[name]);
+const collection = require('../src/auth/models/collection');
+describe('auth test', () => {
+  it('signup test', async () => {
+    const obj = { username: 'username1', password: 'pass' };
+    return mockRequest.post('/signup').send(obj).then(record => {
+      expect(record.status).toEqual(200);
     });
   });
-  it('POST to /signin to login as a user is valid', () => {
-    const obj = { username: 'test2', password: '123' };
-    return mockRequest.post('/signup').send(obj).then(result => {
-      return mockRequest.post('/signin').auth(obj.username, obj.password).then(() => {
-        const token = jwt.verify(result.body.token, '123456789');
-        expect(token).toBeDefined();
+  it('signin test', () => {
+    const obj = { username: 'username2', password: 'pass' };
+    return mockRequest.post('/signup').send(obj).then(async () => {
+      return mockRequest.post('/signin').auth(obj.username, obj.password).then((record) => {
+        expect(record.status).toEqual(200);
       });
     });
   });
-  it('Error middleware function is valid', () => {
-    return mockRequest.get('/foo')
-      .then((result) => {
-        expect(result.status).toBe(404);
+  it('error', () => {
+    return mockRequest.get('/foo').then((record) => {
+      expect(record.status).toBe(404);
+    });
+  });
+  it('vaild secret route', () => {
+    const obj = { username: 'username3', password: 'pass' };
+    return mockRequest.post('/signup').send(obj).then(() => {
+      return mockRequest.post('/signin').auth(obj.username, obj.password).then((data) => {
+        return mockRequest.get('/secret').set({ 'Authorization': `bearer ${data.body.token}` }).then((record) => {
+          expect(record.status).toEqual(200);
+        });
       });
+    });
+  });
+  it('optional expired time for the user', () => {
+    const obj = { username: 'username4' };
+    const testToken = collection.generateToken(obj, '10min');
+    return mockRequest.get('/secret').set({ 'Authorization': `bearer ${testToken}` }).then((record) => {
+      expect(record.status).toEqual(200);
+    });
+  });
+  it('test after expired time', () => {
+    const obj = { username: 'username5' };
+    const testToken = collection.generateToken(obj, '0second');
+    return mockRequest.get('/secret').set({ 'Authorization': `bearer ${testToken}` }).then((record) => {
+      expect(record.status).toEqual(500);
+    });
   });
 });
