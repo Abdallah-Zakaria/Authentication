@@ -4,6 +4,7 @@ const users = require('./users-model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const SECRET = process.env.SECRET || '123456789';
+const permissions = { user: ['read'], writer: ['read', 'create'], editor: ['read', 'create', 'update'], admin: ['read', 'create', 'update', 'delete'] };
 class Collection {
   constructor() {
   }
@@ -52,6 +53,16 @@ class Collection {
       }
     } catch (e) {
       return Promise.reject(e.message);
+    }
+  }
+  async can(permission) {
+    const userData = await users.find({ username: permission.user });
+    const role = userData[0].permissions;
+    const check = permissions[role].includes(permission.capability);
+    if (check) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
